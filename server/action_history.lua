@@ -52,8 +52,6 @@ RegisterNetEvent("EasyAdmin:DeleteAction", function(actionId)
         Storage.removeAction(actionId)
         PrintDebugMessage("Action deleted successfully.", 2)
 
-        detailNotification = GetConvar("ea_detailNotification", "false")
-        moderationNotification = GetConvar("ea_moderationNotification", "false")
         local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
         SendWebhookMessage(preferredWebhook, string.format(GetLocalisedText("actionhistorydeleted"), getName(src, false, true), actionId), "", 16777214)
     else

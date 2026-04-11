@@ -50,30 +50,17 @@ end
 
 -- Chat Reminder Code
 function sendRandomReminder()
-	reminderTime = GetConvarInt("ea_chatReminderTime", 0)
+	local reminderTime = GetConvarInt("ea_chatReminderTime", 0)
 	if reminderTime ~= 0 and #ChatReminders > 0 then
 		local reminder = ChatReminders[ math.random( #ChatReminders ) ] -- select random reminder from table
-		local adminNames = ""
-		local t = {}
+		local names = {}
 		for i,_ in pairs(OnlineAdmins) do
-			table.insert(t, getName(i))
+			names[#names+1] = getName(i)
 		end
-		for i,n in ipairs(t) do 
-			if i == 1 then
-				adminNames = n
-			elseif i == #t then
-				adminNames = adminNames.." "..n
-			else
-				adminNames = adminNames.." "..n..","
-			end
-		end
-		t=nil
-		
-		if adminNames == "" then adminNames = "@admins" end -- if no admins are online just print @admins
+		local adminNames = #names > 0 and table.concat(names, ", ") or "@admins"
+
 		reminder = string.gsub(reminder, "@admins", adminNames)
-		
 		reminder = string.gsub(reminder, "@bancount", #blacklist)
-		
 		reminder = string.gsub(reminder, "@time", os.date("%X", os.time()))
 		reminder = string.gsub(reminder, "@date", os.date("%x", os.time()))
 		TriggerClientEvent("chat:addMessage", -1, { args = { "EasyAdmin", reminder } })
@@ -96,9 +83,9 @@ exports('announce', announce)
 
 Citizen.CreateThread(function()
 	--Wait(10000)
-	reminderTime = GetConvarInt("ea_chatReminderTime", 0)
+	local reminderTime = GetConvarInt("ea_chatReminderTime", 0)
 	if reminderTime ~= 0 then
-		while true do 
+		while true do
 			Wait(reminderTime*60000)
 			sendRandomReminder()
 		end
@@ -884,22 +871,6 @@ Citizen.CreateThread(function()
 	end
 	exports('getPlayerWarnings', getPlayerWarnings)
 
-	RegisterNetEvent("EasyAdmin:GetAdminNotes", function(identifiers)
-		local src = source
-		if DoesPlayerHavePermission(src, "player.adminnotes.view") then
-			if not identifiers then
-				PrintDebugMessage("User has no identifiers somehow, returning no notes.", 2)
-				TriggerClientEvent("EasyAdmin:ReceiveAdminNotes", src, {})
-				return
-			end
-			local history = Storage.getNotes(identifiers)
-			TriggerClientEvent("EasyAdmin:ReceiveAdminNotes", src, history, identifiers)
-		else
-			PrintDebugMessage("Player does not have permission to view admin notes.", 2)
-			TriggerClientEvent("EasyAdmin:ReceiveAdminNotes", src, {}, identifiers)
-		end
-	end)
-	
 	AddEventHandler("EasyAdmin:GetVersion", function(cb)
 		cb(GetVersion())
 	end)

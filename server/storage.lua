@@ -54,20 +54,18 @@ Storage = {
         end
         return false
     end,
-    getBanIdentifier = function(identifiers)
+    getBanIdentifier = function(identifier)
         repeat
             Citizen.Wait(0)
         until listsReady
-        local found = false
         for i, ban in ipairs(banlist) do
-            for j, identifier in ipairs(ban.identifiers) do
-                if ban.identifiers[identifier] then
-                    found = true
-                    break
+            for j, banId in ipairs(ban.identifiers) do
+                if banId == identifier then
+                    return ban
                 end
             end
         end
-        return found
+        return false
     end,
     addBan = function(banId, username, bannedIdentifiers, moderator, reason, expires, expiryString, type, time)
         repeat
@@ -251,7 +249,6 @@ Storage = {
 Citizen.CreateThread(function()
     local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'storage_api_version', 1)
     local banContent = loadJsonFile("banlist.json", currentVersion)
-    local banContent = LoadResourceFile(GetCurrentResourceName(), "banlist.json")
 
     banlist = json.decode(banContent) or {}
 

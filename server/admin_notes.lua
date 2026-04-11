@@ -25,7 +25,7 @@ RegisterNetEvent("EasyAdmin:AddAdminNote", function(note, playerId)
         local moderatorIdentifiers = getAllPlayerIdentifiers(src)
 
         Storage.addNote(note, identifiers, GetPlayerName(src), moderatorIdentifiers)
-        PrintDebugMessage("Admin not added successfully.", 2)
+        PrintDebugMessage("Admin note added successfully.", 2)
     end
 end)
 
