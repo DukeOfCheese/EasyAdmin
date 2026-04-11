@@ -350,7 +350,7 @@ Citizen.CreateThread(function()
 			end
 			local playerData = { coords = tgtCoords, selfbucket = sourceBucket }
 			TriggerClientEvent("EasyAdmin:requestSpectate", source, playerId, playerData)
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText('spectatedplayer'), getName(source, false, true), getName(playerId, true, true)), "spectate", 16777214)
 		end
 	end)
@@ -437,7 +437,7 @@ Citizen.CreateThread(function()
 				TriggerClientEvent("EasyAdmin:requestCleanup", source, type, radius)
 			end
 			TriggerClientEvent("EasyAdmin:showNotification", source, string.format(GetLocalisedText("finishedcleaning"), GetLocalisedText(type)))
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText('admincleanedup'), getName(source, false, true), type, radius), "cleanup", 16777214)
 		end
 	end)
@@ -446,7 +446,7 @@ Citizen.CreateThread(function()
 		if DoesPlayerHavePermission(source, "server.convars") then
 			PrintDebugMessage("Player "..getName(source,true).." set Gametype to "..text, 3)
 			SetGameType(text)
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText('adminchangedconvar'), getName(source, false, true), "gametype", text), "settings", 16777214)
 		end
 	end)
@@ -455,7 +455,7 @@ Citizen.CreateThread(function()
 		if DoesPlayerHavePermission(source, "server.convars") then
 			PrintDebugMessage("Player "..getName(source,true).." set Map Name to "..text, 3)
 			SetMapName(text)
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText('adminchangedconvar'), getName(source, false, true), "mapname", text), "settings", 16777214)
 		end
 	end)
@@ -464,7 +464,7 @@ Citizen.CreateThread(function()
 		if DoesPlayerHavePermission(source, "server.resources.start") then
 			PrintDebugMessage("Player "..getName(source,true).." started Resource "..text, 3)
 			StartResource(text)
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText('adminstartedresource'), getName(source, false, true), text), "settings", 65280)
 		end
 	end)
@@ -473,7 +473,7 @@ Citizen.CreateThread(function()
 		if DoesPlayerHavePermission(source, "server.resources.stop") then
 			PrintDebugMessage("Player "..getName(source,true).." stopped Resource "..text, 3)
 			StopResource(text)
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText('adminstoppedresource'), getName(source, false, true), text), "settings", 16711680)
 		end
 	end)
@@ -482,7 +482,7 @@ Citizen.CreateThread(function()
 		if DoesPlayerHavePermission(source, "server.convars") then
 			PrintDebugMessage("Player "..getName(source,true).." set convar "..convarname.. " to "..convarvalue, 3)
 			SetConvar(convarname, convarvalue)
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText('adminchangedconvar'), getName(source, false, true), convarname, convarvalue), "settings", 16777214)
 		end
 	end)
@@ -491,7 +491,7 @@ Citizen.CreateThread(function()
 		if DoesPlayerHavePermission(source, "server.announce") then
 			PrintDebugMessage("Player "..getName(source,true).." sent a announcement: "..text, 3)
 			announce(text)
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText('adminannouncement'), getName(source, false, true), text), "settings", 16777214)
 		end	
 	end)
@@ -501,7 +501,7 @@ Citizen.CreateThread(function()
 		if DoesPlayerHavePermission(source, "player.teleport.single") and CheckAdminCooldown(source, "teleport") then
 			SetAdminCooldown(source, "teleport")
 			PrintDebugMessage("Player "..getName(source,true).." requsted teleport to "..tgtCoords.x..", "..tgtCoords.y..", "..tgtCoords.z, 3)
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			local playerName = getName(playerId, true, true)
 			if playerId == -1 then
 				playerName = GetLocalisedText("allplayers")
@@ -530,7 +530,7 @@ Citizen.CreateThread(function()
 				TriggerClientEvent("EasyAdmin:showNotification", source, GetLocalisedText("playernotfound"))
 				return
 			end
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText("teleportedtoplayer"), getName(source, false, true), getName(id, true, true)), "teleport", 16777214)
 			TriggerClientEvent('EasyAdmin:TeleportRequest', source, id,tgtCoords)
 		else
@@ -564,7 +564,7 @@ Citizen.CreateThread(function()
 		if DoesPlayerHavePermission(source, "player.slap") and CheckAdminCooldown(source, "slap") and slapPlayer(playerId, slapAmount) then
 			SetAdminCooldown(source, "slap")
 			PrintDebugMessage("Player "..getName(source,true).." slapped "..getName(playerId,true).." for "..slapAmount.." HP", 3)
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText("adminslappedplayer"), getName(source, false, true), getName(playerId, true, true), slapAmount), "slap", 16777214)
 		elseif CachedPlayers[playerId].immune then
 			TriggerClientEvent("EasyAdmin:showNotification", source, GetLocalisedText("adminimmune"))
@@ -593,7 +593,7 @@ Citizen.CreateThread(function()
 
 	RegisterServerEvent("EasyAdmin:FreezePlayer", function(playerId,toggle)
 		if DoesPlayerHavePermission(source, "player.freeze") and not CachedPlayers[playerId].immune and CheckAdminCooldown(source, "freeze") then
-			local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+			local preferredWebhook = getPreferredWebhook()
 			freezePlayer(playerId, toggle)
 			if toggle then
 				SetAdminCooldown(source, "freeze")

@@ -52,7 +52,7 @@ RegisterNetEvent("EasyAdmin:DeleteAction", function(actionId)
         Storage.removeAction(actionId)
         PrintDebugMessage("Action deleted successfully.", 2)
 
-        local preferredWebhook = detailNotification ~= "false" and detailNotification or moderationNotification
+        local preferredWebhook = getPreferredWebhook()
         SendWebhookMessage(preferredWebhook, string.format(GetLocalisedText("actionhistorydeleted"), getName(src, false, true), actionId), "", 16777214)
     else
         PrintDebugMessage("Player does not have permission to delete actions.", 2)
