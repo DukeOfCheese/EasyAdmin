@@ -24,6 +24,9 @@ permissions = {
 	["player.reports.view"] = false,
 	["player.reports.claim"] = false,
 	["player.reports.process"] = false,
+
+	["bot.history"] = false,
+	["bot.notes"] = false,
 	
 	["server.cleanup.cars"] = false,
 	["server.cleanup.props"] = false,
@@ -294,7 +297,7 @@ function string.split(inputstr, sep)
 	if sep == nil then
 		sep = "%s"
 	end
-	local t={} ; i=1
+	local t={} ; local i=1
 	for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
 		t[i] = str
 		i = i + 1

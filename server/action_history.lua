@@ -37,9 +37,13 @@ RegisterNetEvent("EasyAdmin:LogAction", function(action, playerId)
         local identifiers = getAllPlayerIdentifiers(playerId)
         local moderatorIdentifiers = getAllPlayerIdentifiers(src)
 
-        Storage.addAction(action.action, identifiers, action.reason, GetPlayerName(src), moderatorIdentifiers, action.expire, action.expireString)
+        Storage.addAction(action.action, identifiers, action.reason, GetPlayerName(src), moderatorIdentifiers)
         PrintDebugMessage("Action logged successfully.", 2)
     end
+end)
+
+exports('getActionHistory', function(identifiers)
+    return Storage.getAction(identifiers)
 end)
 
 RegisterNetEvent("EasyAdmin:DeleteAction", function(actionId)

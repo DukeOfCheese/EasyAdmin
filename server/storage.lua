@@ -209,6 +209,10 @@ Storage = {
         local idents = CachedPlayers[id].identifiers
         return findByIdentifiers(notes, idents)
     end,
+    getNotesByIdents = function(idents)
+        awaitReady()
+        return findByIdentifiers(notes, idents)
+    end,
 }
 
 Citizen.CreateThread(function()

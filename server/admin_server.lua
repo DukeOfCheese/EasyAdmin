@@ -513,7 +513,7 @@ Citizen.CreateThread(function()
 	
 	RegisterServerEvent("EasyAdmin:TeleportAdminToPlayer", function(id)
 		local source=source
-		if not CachedPlayers[id].dropped and DoesPlayerHavePermission(source, "player.teleport.single") and CheckAdminCooldown(source, "teleport") then
+		if CachedPlayers[id] and not CachedPlayers[id].dropped and DoesPlayerHavePermission(source, "player.teleport.single") and CheckAdminCooldown(source, "teleport") then
 			SetAdminCooldown(source, "teleport")
 			local tgtPed = GetPlayerPed(id)
 			if tgtPed == 0 then
@@ -541,7 +541,7 @@ Citizen.CreateThread(function()
 	
 	RegisterServerEvent("EasyAdmin:TeleportPlayerBack", function(id)
 		local source=source
-		if not CachedPlayers[id].dropped and DoesPlayerHavePermission(source, "player.teleport.single") then
+		if CachedPlayers[id] and not CachedPlayers[id].dropped and DoesPlayerHavePermission(source, "player.teleport.single") then
 			TriggerClientEvent('EasyAdmin:TeleportPlayerBack', id)
 		end
 	end)
@@ -551,7 +551,7 @@ Citizen.CreateThread(function()
 	---@param slapAmount number
 	---@return boolean
 	function slapPlayer(playerId,slapAmount)
-		if not CachedPlayers[playerId].immune then
+		if not (CachedPlayers[playerId] and CachedPlayers[playerId].immune) then
 			TriggerClientEvent("EasyAdmin:SlapPlayer", playerId, slapAmount)
 			return true
 		else
@@ -566,11 +566,11 @@ Citizen.CreateThread(function()
 			PrintDebugMessage("Player "..getName(source,true).." slapped "..getName(playerId,true).." for "..slapAmount.." HP", 3)
 			local preferredWebhook = getPreferredWebhook()
 			SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText("adminslappedplayer"), getName(source, false, true), getName(playerId, true, true), slapAmount), "slap", 16777214)
-		elseif CachedPlayers[playerId].immune then
+		elseif CachedPlayers[playerId] and CachedPlayers[playerId].immune then
 			TriggerClientEvent("EasyAdmin:showNotification", source, GetLocalisedText("adminimmune"))
 		end
 	end)
-	
+
 
 	-- Freezes or unfreezes a player
 	---@param playerId number
@@ -578,7 +578,7 @@ Citizen.CreateThread(function()
 	---@return boolean
 	function freezePlayer(playerId, toggle)
 		if not toggle then toggle = not FrozenPlayers[playerId] end
-		if not CachedPlayers[playerId].immune then
+		if not (CachedPlayers[playerId] and CachedPlayers[playerId].immune) then
 			FrozenPlayers[playerId] = (toggle == true or nil)
 			TriggerClientEvent("EasyAdmin:FreezePlayer", playerId, toggle)
 			for i,_ in pairs(OnlineAdmins) do 
@@ -592,7 +592,7 @@ Citizen.CreateThread(function()
 	exports('freezePlayer', freezePlayer)
 
 	RegisterServerEvent("EasyAdmin:FreezePlayer", function(playerId,toggle)
-		if DoesPlayerHavePermission(source, "player.freeze") and not CachedPlayers[playerId].immune and CheckAdminCooldown(source, "freeze") then
+		if DoesPlayerHavePermission(source, "player.freeze") and not (CachedPlayers[playerId] and CachedPlayers[playerId].immune) and CheckAdminCooldown(source, "freeze") then
 			local preferredWebhook = getPreferredWebhook()
 			freezePlayer(playerId, toggle)
 			if toggle then
@@ -603,11 +603,11 @@ Citizen.CreateThread(function()
 				SendWebhookMessage(preferredWebhook,string.format(GetLocalisedText("adminunfrozeplayer"), getName(source, false, true), getName(playerId, true, true)), "freeze", 16777214)
 				PrintDebugMessage("Player "..getName(source,true).." unfroze "..getName(playerId,true), 3)
 			end
-		elseif CachedPlayers[playerId].immune then
+		elseif CachedPlayers[playerId] and CachedPlayers[playerId].immune then
 			TriggerClientEvent("EasyAdmin:showNotification", source, GetLocalisedText("adminimmune"))
 		end
 	end)
-	
+
 
 	scrinprogress = false
 	-- Checks if a screenshot is in progress

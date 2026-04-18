@@ -1,3 +1,7 @@
+exports('getAdminNotes', function(identifiers)
+    return Storage.getNotesByIdents(identifiers)
+end)
+
 RegisterNetEvent("EasyAdmin:GetAdminNotes", function(playerId)
     local src = source
     if DoesPlayerHavePermission(src, "player.adminnotes.view") then
